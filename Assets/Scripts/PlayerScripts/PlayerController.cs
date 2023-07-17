@@ -1,4 +1,5 @@
 using UnityEngine;
+using Photon.Pun;
 
 public class PlayerController : MonoBehaviour
 {
@@ -6,13 +7,17 @@ public class PlayerController : MonoBehaviour
     private float verticalInput;
 
     [SerializeField] private float speed = 10f;
+    [SerializeField] private PhotonView view;
 
     private void Update()
     {
-        GetInput();
+        if (view.IsMine)
+        {
+            GetInput();
 
-        if (horizontalInput != 0 || verticalInput != 0)
-            Move();
+            if (horizontalInput != 0 || verticalInput != 0)
+                Move();
+        }
     }
 
     private void GetInput()
