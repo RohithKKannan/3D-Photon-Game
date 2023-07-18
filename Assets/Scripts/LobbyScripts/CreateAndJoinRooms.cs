@@ -1,21 +1,21 @@
 using UnityEngine;
-using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
 
 public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
 {
     [SerializeField] int maxPlayers;
 
     [Header("Create Room")]
-    [SerializeField] GameObject CreatePanel;
-    [SerializeField] InputField createInput;
-    [SerializeField] Text CreateProgress;
+    [SerializeField] private GameObject CreatePanel;
+    [SerializeField] private TMP_InputField createInput;
+    [SerializeField] private TMP_Text CreateProgress;
 
     [Header("Join Room")]
-    [SerializeField] GameObject JoinPanel;
-    [SerializeField] InputField joinInput;
-    [SerializeField] Text JoinProgress;
+    [SerializeField] private GameObject JoinPanel;
+    [SerializeField] private TMP_InputField joinInput;
+    [SerializeField] private TMP_Text JoinProgress;
 
     [Header("Loading Panel")]
     [SerializeField] GameObject LoadingPanel;

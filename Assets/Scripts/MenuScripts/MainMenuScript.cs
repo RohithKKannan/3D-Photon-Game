@@ -1,16 +1,16 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
 
 public class MainMenuScript : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject MenuPanel;
     [SerializeField] private GameObject ConnectionStatusPanel;
 
-    [SerializeField] private InputField playerName;
-    [SerializeField] private Text progressLabel;
+    [SerializeField] private TMP_InputField playerName;
+    [SerializeField] private TMP_Text progressLabel;
 
     private void Start()
     {
