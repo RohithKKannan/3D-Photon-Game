@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
 
             if (horizontalInput != 0 || verticalInput != 0)
                 Move();
+
+            if (Input.GetKeyDown(KeyCode.Space))
+                view.RPC("SendMessage", RpcTarget.All, view.Owner.NickName, "Hello World!");
         }
     }
 
@@ -30,5 +33,11 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 movement = new Vector3(horizontalInput, 0, verticalInput);
         transform.Translate(movement * speed * Time.deltaTime);
+    }
+
+    [PunRPC]
+    private void SendMessage(string name, string text)
+    {
+        Debug.Log($"{name} : {text}");
     }
 }
