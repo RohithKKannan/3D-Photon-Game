@@ -650,6 +650,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 599681394035779333, guid: 61faddb82a96acd42832fea580c0245b, type: 3}
+  materials:
+  - {fileID: 2100000, guid: 9fd5123a4fc704a4ebb9259875bb7be7, type: 2}
+  - {fileID: 2100000, guid: 856b810ead77f0842bf313fec3d6dc07, type: 2}
+  - {fileID: 2100000, guid: 886d02c00fa918e44946d3061aede253, type: 2}
 --- !u!850595691 &594965844
 LightingSettings:
   m_ObjectHideFlags: 0

@@ -1,13 +1,38 @@
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IPunInstantiateMagicCallback
 {
     private float horizontalInput;
     private float verticalInput;
+    private MeshRenderer meshRenderer;
 
     [SerializeField] private float speed = 10f;
     [SerializeField] private PhotonView view;
+    [SerializeField] Material[] materials;
+
+    private void Awake()
+    {
+        meshRenderer = GetComponent<MeshRenderer>();
+    }
+
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        object[] instantiationData = info.photonView.InstantiationData;
+
+        switch ((PlayerColor)instantiationData[0])
+        {
+            case PlayerColor.Red:
+                meshRenderer.material = materials[0];
+                break;
+            case PlayerColor.Blue:
+                meshRenderer.material = materials[1];
+                break;
+            case PlayerColor.Green:
+                meshRenderer.material = materials[2];
+                break;
+        }
+    }
 
     private void Update()
     {
@@ -19,7 +44,7 @@ public class PlayerController : MonoBehaviour
                 Move();
 
             if (Input.GetKeyDown(KeyCode.Space))
-                view.RPC("SendMessage", RpcTarget.All, view.Owner.NickName, "Hello World!");
+                view.RPC("SendMessage", RpcTarget.All, view.Owner.NickName, "Good Luck!");
         }
     }
 

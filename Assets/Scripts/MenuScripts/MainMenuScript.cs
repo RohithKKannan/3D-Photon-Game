@@ -4,12 +4,20 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 
+public enum PlayerColor
+{
+    Red, Blue, Green
+}
+
 public class MainMenuScript : MonoBehaviourPunCallbacks
 {
+    public static PlayerColor playerColor;
+
     [SerializeField] private GameObject MenuPanel;
     [SerializeField] private GameObject ConnectionStatusPanel;
 
     [SerializeField] private TMP_InputField playerName;
+    [SerializeField] private TMP_Dropdown playerColorSelection;
     [SerializeField] private TMP_Text progressLabel;
 
     private void Start()
@@ -27,6 +35,8 @@ public class MainMenuScript : MonoBehaviourPunCallbacks
         progressLabel.gameObject.SetActive(false);
 
         PhotonNetwork.NickName = playerName.text;
+        playerColor = (PlayerColor)playerColorSelection.value;
+
         Connect();
     }
 

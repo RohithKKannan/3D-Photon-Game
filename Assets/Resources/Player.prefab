@@ -131,6 +131,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   view: {fileID: 3301816701572054110}
+  materials:
+  - {fileID: 2100000, guid: 9fd5123a4fc704a4ebb9259875bb7be7, type: 2}
+  - {fileID: 2100000, guid: 856b810ead77f0842bf313fec3d6dc07, type: 2}
+  - {fileID: 2100000, guid: 886d02c00fa918e44946d3061aede253, type: 2}
 --- !u!114 &3301816701572054110
 MonoBehaviour:
   m_ObjectHideFlags: 0

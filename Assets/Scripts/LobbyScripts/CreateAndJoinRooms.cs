@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -81,5 +82,15 @@ public class CreateAndJoinRooms : MonoBehaviourPunCallbacks
         JoinProgress.gameObject.SetActive(true);
 
         DisableLoading();
+    }
+
+    public void ExitLobby()
+    {
+        PhotonNetwork.Disconnect();
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        SceneManager.LoadScene(0);
     }
 }

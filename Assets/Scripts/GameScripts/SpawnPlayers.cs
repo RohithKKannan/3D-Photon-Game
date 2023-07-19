@@ -8,6 +8,10 @@ public class SpawnPlayers : MonoBehaviour
     private void Start()
     {
         Vector3 randomPos = new Vector3(Random.Range(-15, 16), 3, Random.Range(-15, 16));
-        PhotonNetwork.Instantiate(playerPrefab.name, randomPos, Quaternion.identity);
+
+        object[] customPlayerData = new object[1];
+        customPlayerData[0] = MainMenuScript.playerColor;
+
+        PhotonNetwork.Instantiate(playerPrefab.name, randomPos, Quaternion.identity, 0, customPlayerData);
     }
 }
