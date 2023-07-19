@@ -30,7 +30,11 @@ public class MainMenuScript : MonoBehaviourPunCallbacks
     public void StartGame()
     {
         if (playerName.text == "")
+        {
+            progressLabel.text = "Enter a valid name!";
+            progressLabel.gameObject.SetActive(true);
             return;
+        }
 
         progressLabel.gameObject.SetActive(false);
 

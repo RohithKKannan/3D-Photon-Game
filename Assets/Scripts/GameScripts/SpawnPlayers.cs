@@ -1,17 +1,36 @@
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 
-public class SpawnPlayers : MonoBehaviour
+public class SpawnPlayers : MonoBehaviourPunCallbacks
 {
     [SerializeField] private PlayerController playerPrefab;
 
-    private void Start()
+    public void StartGame()
     {
-        Vector3 randomPos = new Vector3(Random.Range(-15, 16), 3, Random.Range(-15, 16));
+        if (PhotonNetwork.IsMasterClient)
+            SpawnAllPlayers();
+    }
 
-        object[] customPlayerData = new object[1];
-        customPlayerData[0] = MainMenuScript.playerColor;
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Debug.Log(newPlayer.NickName + " has entered the room");
+    }
 
-        PhotonNetwork.Instantiate(playerPrefab.name, randomPos, Quaternion.identity, 0, customPlayerData);
+    [PunRPC]
+    public void SpawnAllPlayers()
+    {
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (player == PhotonNetwork.LocalPlayer)
+            {
+                Vector3 randomPos = new Vector3(Random.Range(-15, 16), 3, Random.Range(-15, 16));
+
+                object[] customPlayerData = new object[1];
+                customPlayerData[0] = MainMenuScript.playerColor;
+
+                PhotonNetwork.Instantiate(playerPrefab.name, randomPos, Quaternion.identity, 0, customPlayerData);
+            }
+        }
     }
 }
