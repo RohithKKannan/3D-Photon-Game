@@ -11,9 +11,10 @@ public class GameController : MonoBehaviourPunCallbacks
     private bool timerStarted;
     private double startTime;
     private double timerIncrementValue;
-    private double timerValue = 120;
     private double timeToDisplay;
+    private GameObject thisPlayer;
 
+    [SerializeField] private double timerValue = 10;
     [SerializeField] private PhotonView view;
     [SerializeField] private PlayerController playerPrefab;
     [SerializeField] private GameObject startButton;
@@ -36,19 +37,17 @@ public class GameController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            startButton.SetActive(false);
             customValue = new ExitGames.Client.Photon.Hashtable();
-
             startTime = PhotonNetwork.Time;
             customValue.Add("startTime", startTime);
             PhotonNetwork.CurrentRoom.SetCustomProperties(customValue);
 
             timerStarted = true;
             timer.gameObject.SetActive(true);
+            startButton.SetActive(false);
 
             view.RPC("SpawnAllPlayers", RpcTarget.AllViaServer);
             view.RPC("SetStartTime", RpcTarget.AllViaServer);
-            startButton.SetActive(false);
         }
     }
 
@@ -76,7 +75,7 @@ public class GameController : MonoBehaviourPunCallbacks
                 object[] customPlayerData = new object[1];
                 customPlayerData[0] = MainMenuScript.playerColor;
 
-                PhotonNetwork.Instantiate(playerPrefab.name, randomPos, Quaternion.identity, 0, customPlayerData);
+                thisPlayer = PhotonNetwork.Instantiate(playerPrefab.name, randomPos, Quaternion.identity, 0, customPlayerData);
             }
         }
     }
@@ -123,6 +122,29 @@ public class GameController : MonoBehaviourPunCallbacks
         timer.text = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
     }
 
+    private void GameOver()
+    {
+        timerStarted = false;
+        if (PhotonNetwork.IsMasterClient)
+            view.RPC("DestroyAllPlayers", RpcTarget.AllViaServer);
+    }
+
+    [PunRPC]
+    private void DestroyAllPlayers()
+    {
+        if (PhotonNetwork.IsMasterClient)
+            startButton.SetActive(true);
+        lobbyPanel.SetActive(true);
+
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            if (player.IsLocal)
+            {
+                PhotonNetwork.Destroy(thisPlayer);
+            }
+        }
+    }
+
     private void Update()
     {
         if (!timerStarted)
@@ -132,7 +154,10 @@ public class GameController : MonoBehaviourPunCallbacks
         timeToDisplay = timerValue - timerIncrementValue;
         UpdateTimeUI();
 
-        if (timeToDisplay == 0)
+        if (timeToDisplay <= 0)
+        {
             Debug.Log("Game over!");
+            GameOver();
+        }
     }
 }

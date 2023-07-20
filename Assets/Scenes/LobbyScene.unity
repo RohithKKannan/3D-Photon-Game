@@ -994,7 +994,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1288fb9703acd324fb61cc6c7633bfac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPlayers: 2
+  maxPlayers: 4
   CreatePanel: {fileID: 1273062197}
   createInput: {fileID: 159994695}
   CreateProgress: {fileID: 392862732}
