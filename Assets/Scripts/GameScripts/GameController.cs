@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
@@ -9,16 +10,17 @@ public class GameController : MonoBehaviourPunCallbacks
 {
     private ExitGames.Client.Photon.Hashtable customValue;
     private bool timerStarted;
+    private int playerSpawnCount;
     private double startTime;
     private double timerIncrementValue;
     private double timeToDisplay;
     private GameObject thisPlayer;
+    private Dictionary<Player, PlayerController> playersAndControllers;
 
     [SerializeField] private double timerValue = 10;
     [SerializeField] private PhotonView view;
     [SerializeField] private PlayerController playerPrefab;
     [SerializeField] private GameObject startButton;
-
     [SerializeField] private TMP_Text timer;
 
     [Header("Player List")]
@@ -28,8 +30,11 @@ public class GameController : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        if (!PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient)
+            playersAndControllers = new Dictionary<Player, PlayerController>();
+        else
             startButton.SetActive(false);
+
         RefreshPlayerList();
     }
 
@@ -37,6 +42,8 @@ public class GameController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            playerSpawnCount = 0;
+
             customValue = new ExitGames.Client.Photon.Hashtable();
             startTime = PhotonNetwork.Time;
             customValue.Add("startTime", startTime);
@@ -63,6 +70,19 @@ public class GameController : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
+    public void IncrementSpawnCount(Player player, PlayerController newPlayer)
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            playerSpawnCount++;
+            if (!playersAndControllers.ContainsKey(player))
+                playersAndControllers[player] = newPlayer;
+            if (playerSpawnCount == PhotonNetwork.PlayerList.Length)
+                SetRandomPlayerHat();
+        }
+    }
+
+    [PunRPC]
     public void SpawnAllPlayers()
     {
         lobbyPanel.SetActive(false);
@@ -76,8 +96,20 @@ public class GameController : MonoBehaviourPunCallbacks
                 customPlayerData[0] = MainMenuScript.playerColor;
 
                 thisPlayer = PhotonNetwork.Instantiate(playerPrefab.name, randomPos, Quaternion.identity, 0, customPlayerData);
+                view.RPC("IncrementSpawnCount", RpcTarget.MasterClient, player, thisPlayer.GetComponent<PlayerController>());
             }
         }
+    }
+
+    private void SetRandomPlayerHat()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+
+        int playerIndex = UnityEngine.Random.Range(0, PhotonNetwork.PlayerList.Length);
+        Player randomPlayer = PhotonNetwork.PlayerList[playerIndex];
+
+        playersAndControllers[randomPlayer].EnableHat();
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -126,16 +158,31 @@ public class GameController : MonoBehaviourPunCallbacks
     {
         timerStarted = false;
         if (PhotonNetwork.IsMasterClient)
+        {
+            FindWinner();
             view.RPC("DestroyAllPlayers", RpcTarget.AllViaServer);
+            playersAndControllers.Clear();
+            startButton.SetActive(true);
+        }
+        lobbyPanel.SetActive(true);
+    }
+
+    private void FindWinner()
+    {
+        foreach (Player player in PhotonNetwork.PlayerList)
+        {
+            bool foundWinner = playersAndControllers[player].IsHatEnabled();
+            if (foundWinner)
+            {
+                Debug.Log(player.NickName + " is the WINNER!");
+                return;
+            }
+        }
     }
 
     [PunRPC]
     private void DestroyAllPlayers()
     {
-        if (PhotonNetwork.IsMasterClient)
-            startButton.SetActive(true);
-        lobbyPanel.SetActive(true);
-
         foreach (Player player in PhotonNetwork.PlayerList)
         {
             if (player.IsLocal)

@@ -44,6 +44,9 @@ MonoBehaviour:
   - SpawnAllPlayers
   - SetStartTime
   - DestroyAllPlayers
+  - EnableHat
+  - DisableHat
+  - IncrementSpawnCount
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

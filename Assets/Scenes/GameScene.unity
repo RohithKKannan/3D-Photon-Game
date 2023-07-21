@@ -1262,6 +1262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d65e1aadf0b23b438c63d7ff2355b58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timerValue: 10
   view: {fileID: 952185340}
   playerPrefab: {fileID: 599681394035779333, guid: 61faddb82a96acd42832fea580c0245b, type: 3}
   startButton: {fileID: 854342575}

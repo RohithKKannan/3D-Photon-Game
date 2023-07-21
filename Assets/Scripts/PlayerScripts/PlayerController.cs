@@ -9,7 +9,8 @@ public class PlayerController : MonoBehaviour, IPunInstantiateMagicCallback
 
     [SerializeField] private float speed = 10f;
     [SerializeField] private PhotonView view;
-    [SerializeField] Material[] materials;
+    [SerializeField] private GameObject hat;
+    [SerializeField] private Material[] materials;
 
     private void Awake()
     {
@@ -60,9 +61,26 @@ public class PlayerController : MonoBehaviour, IPunInstantiateMagicCallback
         transform.Translate(movement * speed * Time.deltaTime);
     }
 
-    [PunRPC]
     private void SendMessage(string name, string text)
     {
         Debug.Log($"{name} : {text}");
+    }
+
+    public void EnableHat()
+    {
+        Debug.Log("Enable hat called!");
+        hat.SetActive(true);
+    }
+
+    public void DisableHat()
+    {
+        Debug.Log("Disable hat called!");
+        if (hat.activeInHierarchy)
+            hat.SetActive(false);
+    }
+
+    public bool IsHatEnabled()
+    {
+        return hat.activeInHierarchy;
     }
 }
